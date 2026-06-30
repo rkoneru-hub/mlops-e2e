@@ -167,7 +167,11 @@ def run_main():
 
     logger.debug("Downloading raw input data")
     base_dir = "/opt/ml/processing"
-    data_builder = DataBuilder(base_dir, args.data_manifest)
+    # data_builder = DataBuilder(base_dir, args.data_manifest)
+    with open(args.data_manifest) as f:
+        manifest = f.read()
+
+    data_builder = DataBuilder(base_dir, manifest)
     df = data_builder.build()
 
     logger.debug("Preprocessing raw input data")

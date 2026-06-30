@@ -134,14 +134,23 @@ def get_pipeline(
     step_process = ProcessingStep(
         name="PreprocessData",
         processor=sklearn_processor,
+        inputs=[
+            ProcessingInput(
+            source=os.path.join(BASE_DIR, "..", "dataManifest.json"),
+            destination="/opt/ml/processing/input"
+        )
+        ],
         outputs=[
             ProcessingOutput(output_name="train", source="/opt/ml/processing/train"),
             ProcessingOutput(output_name="validation", source="/opt/ml/processing/validation"),
             ProcessingOutput(output_name="test", source="/opt/ml/processing/test"),
             ProcessingOutput(output_name="model", source="/opt/ml/processing/model"),
         ],
+       
         code=os.path.join(BASE_DIR, "..", "src", "preprocess.py"),
-        job_arguments=["--data-manifest", f.read()],
+        # job_arguments=["--data-manifest", f.read()],
+        job_arguments=["--data-manifest","/opt/ml/processing/input/dataManifest.json"
+        ]
     )
 
     f.close()
