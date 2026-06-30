@@ -1,0 +1,201 @@
+{
+    "pipeline": {
+        "name": "MLOpsInfrastractureStack-mlops-e2e-CodePipelineMLOpsPipelineFE09A9A9-Cv23wRJWQWeS",
+        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-AicKyuxPzi2B",
+        "artifactStore": {
+            "type": "S3",
+            "location": "mlopsinfrastracturestack--codepipelinemlopspipelin-mloysn8j0vui",
+            "encryptionKey": {
+                "id": "arn:aws:kms:eu-west-2:972024102569:key/934d8e5a-66cb-44d2-8042-706b237a4da9",
+                "type": "KMS"
+            }
+        },
+        "stages": [
+            {
+                "name": "Source",
+                "actions": [
+                    {
+                        "name": "SourceCode",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "provider": "CodeStarSourceConnection",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "BranchName": "main",
+                            "ConnectionArn": "arn:aws:codeconnections:eu-west-2:972024102569:connection/ddc24b42-5a90-4101-b153-664a424666ae",
+                            "FullRepositoryId": "mlops-e2e-new",
+                            "OutputArtifactFormat": "CODE_ZIP"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceCodeOutput"
+                            }
+                        ],
+                        "inputArtifacts": [],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-brz7eDpVDRPs",
+                        "region": "eu-west-2"
+                    },
+                    {
+                        "name": "SourceData",
+                        "actionTypeId": {
+                            "category": "Source",
+                            "owner": "AWS",
+                            "provider": "S3",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "S3Bucket": "mlopsinfrastracturestack--datasourcedatamanifestbu-h8bcc1slntqg",
+                            "S3ObjectKey": "manifest.json.zip"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "SourceDataOutput"
+                            }
+                        ],
+                        "inputArtifacts": [],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-BtKpEbzNDFIC"
+                    }
+                ]
+            },
+            {
+                "name": "CI",
+                "actions": [
+                    {
+                        "name": "CIBuild",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "PrimarySource": "SourceCodeOutput",
+                            "ProjectName": "CodePipelineCIBuildC94A3009-906cfsIsf0Ij"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            }
+                        ],
+                        "inputArtifacts": [
+                            {
+                                "name": "SourceCodeOutput"
+                            },
+                            {
+                                "name": "SourceDataOutput"
+                            }
+                        ],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-Ah9qBBRUsL5O"
+                    }
+                ]
+            },
+            {
+                "name": "MLPipeline",
+                "actions": [
+                    {
+                        "name": "MLPipeline",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "EnvironmentVariables": "[{\"name\":\"SAGEMAKER_ARTIFACT_BUCKET\",\"type\":\"PLAINTEXT\",\"value\":\"mlopsinfrastracturestack--sagemakerconstructsagema-dw8y8r0hhnbe\"},{\"name\":\"SAGEMAKER_PIPELINE_ROLE_ARN\",\"type\":\"PLAINTEXT\",\"value\":\"arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--SageMakerConstructSageMak-3Qh01Fy9wup0\"},{\"name\":\"SAGEMAKER_PROJECT_NAME\",\"type\":\"PLAINTEXT\",\"value\":\"mlops-e2e\"},{\"name\":\"PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION\",\"type\":\"PLAINTEXT\",\"value\":\"python\"}]",
+                            "ProjectName": "CodePipelineMLPipelineC1BEF-CBJDKZleDp1b"
+                        },
+                        "outputArtifacts": [
+                            {
+                                "name": "PipelineOutput"
+                            }
+                        ],
+                        "inputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            }
+                        ],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-jeIAA3q9C4NH"
+                    }
+                ]
+            },
+            {
+                "name": "Deploy",
+                "actions": [
+                    {
+                        "name": "Approval",
+                        "actionTypeId": {
+                            "category": "Approval",
+                            "owner": "AWS",
+                            "provider": "Manual",
+                            "version": "1"
+                        },
+                        "runOrder": 1,
+                        "configuration": {
+                            "CustomData": "A new version of the model for project mlops-e2e is waiting for approval",
+                            "ExternalEntityLink": "https://eu-west-2.console.aws.amazon.com/sagemaker/home?region=eu-west-2#/studio/",
+                            "NotificationArn": "arn:aws:sns:eu-west-2:972024102569:ModelDeploymentApprovalTopic"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-7GguOXrk1yZA"
+                    },
+                    {
+                        "name": "Deploy",
+                        "actionTypeId": {
+                            "category": "Build",
+                            "owner": "AWS",
+                            "provider": "CodeBuild",
+                            "version": "1"
+                        },
+                        "runOrder": 2,
+                        "configuration": {
+                            "PrimarySource": "BuildOutput",
+                            "ProjectName": "CodePipelineDeployProject1B-QOjTAgNaQqE4"
+                        },
+                        "outputArtifacts": [],
+                        "inputArtifacts": [
+                            {
+                                "name": "BuildOutput"
+                            },
+                            {
+                                "name": "PipelineOutput"
+                            }
+                        ],
+                        "roleArn": "arn:aws:iam::972024102569:role/MLOpsInfrastractureStack--CodePipelineMLOpsPipeline-cMrA73QiQ0Vr"
+                    }
+                ]
+            }
+        ],
+        "version": 2,
+        "executionMode": "SUPERSEDED",
+        "pipelineType": "V2",
+        "triggers": [
+            {
+                "providerType": "CodeStarSourceConnection",
+                "gitConfiguration": {
+                    "sourceActionName": "SourceCode",
+                    "push": [
+                        {
+                            "branches": {
+                                "includes": [
+                                    "main"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "metadata": {
+        "pipelineArn": "arn:aws:codepipeline:eu-west-2:972024102569:MLOpsInfrastractureStack-mlops-e2e-CodePipelineMLOpsPipelineFE09A9A9-Cv23wRJWQWeS",
+        "created": "2026-06-29T16:22:03.076000+01:00",
+        "updated": "2026-06-29T23:08:51.621000+01:00"
+    }
+}
