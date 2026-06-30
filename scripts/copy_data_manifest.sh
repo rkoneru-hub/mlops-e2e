@@ -10,14 +10,11 @@ set -e
 # echo "Copying Data Manifest to main folder"
 # cat ${CODEBUILD_SRC_DIR_SourceDataOutput}/manifest.json > ./dataManifest.json
 
-echo "===== Files in SourceDataOutput ====="
+
+echo "===== SourceDataOutput ====="
+
 find ${CODEBUILD_SRC_DIR_SourceDataOutput} -type f
 
-echo "===== Directory Structure ====="
+echo "============================"
+
 ls -R ${CODEBUILD_SRC_DIR_SourceDataOutput}
-
-echo "===== Data Manifest ====="
-cat ${CODEBUILD_SRC_DIR_SourceDataOutput}/manifest.json
-
-echo "Copying Data Manifest"
-cp ${CODEBUILD_SRC_DIR_SourceDataOutput}/manifest.json ./dataManifest.json
