@@ -2,7 +2,7 @@
     "projectName": "mlops-e2e",
     "repoType": "git",
     "git": {
-        "githubConnectionArn": "arn:aws:codeconnections:eu-west-2:972024102569:connection/d4825a48-1611-4ceb-ba51-0a9a1a543efb",
+        "githubConnectionArn": "arn:aws:codeconnections:eu-west-2:972024102569:connection/ddc24b42-5a90-4101-b153-664a424666ae",
         "githubRepoOwner": "rkoneru-hub",
         "githubRepoName": "mlops-e2e"
     },
