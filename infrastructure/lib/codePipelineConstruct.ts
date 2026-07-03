@@ -163,14 +163,11 @@ export class CodePipelineConstruct extends Construct {
             },
         });
 
-        
         const mlPipelie = new codepipeline_actions.CodeBuildAction({
             actionName: 'MLPipeline',
             project: mlPipelineProject,
             input: buildOutput,
-
             extraInputs: [sourceDataOutput],
-
             outputs: [pipelineOutput],
 
             environmentVariables: {
@@ -188,7 +185,7 @@ export class CodePipelineConstruct extends Construct {
                 },
                 PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION: {
                     type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-                    value: "python",
+                    value: 'TypeScript',
                 },
             },
         });
